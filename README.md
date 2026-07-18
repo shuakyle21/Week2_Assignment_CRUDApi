@@ -2,6 +2,8 @@
 
 A simple task management REST API built with **FastAPI**. It demonstrates a complete Create, Read, Update, and Delete (CRUD) workflow over an in-memory list of tasks, with request validation and clear, field-level error messages.
 
+> **AI vs me:** the `ai-version` branch holds this AI-generated reconstruction of the project, built purely from prompts against an emptied structure. It's kept isolated on its own branch and is not merged into `main`, which holds the original hand-written implementation — so the two can be compared directly.
+
 ## What is this?
 
 This project is a small, self-contained backend service for managing a to-do list of tasks. Each task is represented as:
