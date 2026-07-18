@@ -2,7 +2,7 @@
 
 A simple task management REST API built with **FastAPI**. It demonstrates a complete Create, Read, Update, and Delete (CRUD) workflow over an in-memory list of tasks, with request validation and clear, field-level error messages.
 
-> **AI vs me:** the `ai-version` branch holds this AI-generated reconstruction of the project, built purely from prompts against an emptied structure. It's kept isolated on its own branch and is not merged into `main`, which holds the original hand-written implementation — so the two can be compared directly.
+> **AI vs me:** this `ai-version/` folder holds an AI-generated reconstruction of the project, built purely from prompts against an emptied structure on the `ai-version` branch. It's kept isolated in its own folder, separate from the root-level `main.py`/`README.md`, which hold the original hand-written implementation — so the two can be compared directly.
 
 ## What is this?
 
@@ -33,7 +33,7 @@ This API was built as a hands-on exercise in designing and implementing a full C
 
    ```bash
    git clone <repository-url>
-   cd Week2_Assignment_CRUDApi
+   cd Week2_Assignment_CRUDApi/ai-version
    ```
 
 2. **Install dependencies**
