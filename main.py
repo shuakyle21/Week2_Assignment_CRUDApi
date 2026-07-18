@@ -37,3 +37,31 @@ def create_task(task: dict):
     if task.get("title") is None:
         raise HTTPException(status_code=400, detail="Title is required")
     return {201: "Created", "task": tasks}
+
+@app.put("/tasks/{id}")
+async def update_task(id: int, task: dict):
+    if task is None or task == {}:
+        raise HTTPException(status_code=400, detail="Empty body")
+    
+    title = task.get("title")
+    if title is not None and title.strip() == "":
+        raise HTTPException(status_code=400, detail="invalid body")
+    for t in tasks:
+        if t["id"] == id:
+            if title is not None:
+                t["title"] = title
+            if task.get("done") is not None:
+                t["done"] = task.get("done")
+            return {
+                "message": f"Task {id} updated",
+                "task": t
+            }
+    raise HTTPException(status_code=404, detail=f"Task {id} not found")
+
+@app.delete("/tasks/{id}")
+def delete_task(id: int):
+    for task in tasks:
+        if task["id"] == id:
+            tasks.remove(task)
+            return { "message": f"Task {id} deleted" }
+    raise HTTPException(status_code=404, detail=f"Task {id} not found")
