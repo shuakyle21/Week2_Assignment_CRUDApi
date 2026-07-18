@@ -1,7 +1,9 @@
 from typing import List
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="Task CRUD API",
@@ -16,7 +18,26 @@ class Task(BaseModel):
     done: bool = False
 
 
+class TaskCreate(BaseModel):
+    title: str = Field(..., min_length=1, description="Title of the task")
+    done: bool = Field(default=False, description="Whether the task is completed")
+
+
 tasks: List[Task] = []
+next_id = 1
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Return validation errors with the offending field name called out explicitly."""
+    errors = [
+        {"field": str(error["loc"][-1]), "message": error["msg"]}
+        for error in exc.errors()
+    ]
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": "Validation failed", "errors": errors},
+    )
 
 
 @app.get("/", tags=["Root"])
@@ -48,3 +69,13 @@ def get_task(task_id: int):
         if task.id == task_id:
             return task
     raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+
+
+@app.post("/tasks", response_model=Task, status_code=status.HTTP_201_CREATED, tags=["Tasks"])
+def create_task(payload: TaskCreate):
+    """Create a new task. `title` must be a non-empty string; `id` is assigned automatically."""
+    global next_id
+    new_task = Task(id=next_id, title=payload.title, done=payload.done)
+    tasks.append(new_task)
+    next_id += 1
+    return new_task
