@@ -23,6 +23,11 @@ class TaskCreate(BaseModel):
     done: bool = Field(default=False, description="Whether the task is completed")
 
 
+class TaskUpdate(BaseModel):
+    title: str = Field(..., min_length=1, description="Title of the task")
+    done: bool = Field(..., description="Whether the task is completed")
+
+
 tasks: List[Task] = []
 next_id = 1
 
@@ -79,3 +84,24 @@ def create_task(payload: TaskCreate):
     tasks.append(new_task)
     next_id += 1
     return new_task
+
+
+@app.put("/tasks/{task_id}", response_model=Task, tags=["Tasks"])
+def update_task(task_id: int, payload: TaskUpdate):
+    """Update an existing task's title and done status. Both fields are required."""
+    for index, task in enumerate(tasks):
+        if task.id == task_id:
+            updated_task = Task(id=task_id, title=payload.title, done=payload.done)
+            tasks[index] = updated_task
+            return updated_task
+    raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
+
+
+@app.delete("/tasks/{task_id}", tags=["Tasks"])
+def delete_task(task_id: int):
+    """Delete a task by its id."""
+    for index, task in enumerate(tasks):
+        if task.id == task_id:
+            tasks.pop(index)
+            return {"message": f"Task with id {task_id} deleted successfully"}
+    raise HTTPException(status_code=404, detail=f"Task with id {task_id} not found")
