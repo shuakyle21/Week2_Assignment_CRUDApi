@@ -51,4 +51,5 @@ curl -i -X DELETE http://localhost:8000/tasks/1
 
 ## Swagger UI
 
-Interactive API documentation is available at `http://localhost:8000/docs` when the server is running.
+![Screenshot](images/screenshot.png)
+
